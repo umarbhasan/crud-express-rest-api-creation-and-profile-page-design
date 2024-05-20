@@ -4,7 +4,7 @@ const app = express();
 var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  database: "hr",
+  database: "assignment2",
 });
 connection.connect((err) => {
   if (err) {
