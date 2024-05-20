@@ -98,6 +98,26 @@
             const password = form.password.value;
             const retypePassword = form.retypePassword.value;
             const profileImage = form.profileImage.files[0];
+            const formData = new FormData(form);
+
+            fetch('/api/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Registration failed.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Registration successful.');
+                window.location.href = '/login.html'; // Redirect to login page after successful registration
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+            });
 
             if (password !== retypePassword) {
                 alert('Passwords do not match.');
