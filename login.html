@@ -72,5 +72,32 @@
             <a href="register.html">Register</a>
         </form>
     </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/api/login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Login successful.');
+                // You can handle storing the token in localStorage and redirecting to profile page here
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            });
+        });
+    </script>
 </body>
 </html>
