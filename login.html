@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <style>
+        body {
+            background: #f4f4f4;
+            font-family: Arial, sans-serif;
+            color: #000;
+        }
+        
+        .container {
+            width: 400px;
+            background-color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            padding: 20px;
+            margin: 50px auto;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 10px;
+            width: 95%; /* Increase the input field length */
+        }
+
+        input[type="checkbox"] {
+            vertical-align: middle;
+            position: relative;
+            display: inline-block;
+        }
+        
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 3px;
+            border: none;
+            padding: 10px;
+            width: 100%; /* Increase the button field length */
+        }
+        
+        a {
+            color: #007bff;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        
+        label {
+            text-align: left;
+            display: block;
+        }
+    </style>
+</head>    
+<body>
+    <div class="container">
+        <h2>Login Form</h2>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br><br>
+
+            <label><input type="checkbox" id="remember"> Remember Me</label>
+            <input type="submit" value="Login"><br><br>
+
+            <a href="https://www.linkedin.com/in/umar-hasan-2275aa21b">Forgot Password?</a><br><br>
+            <text>Don't have an account? </text>
+            
+            <a href="register.html">Register</a>
+        </form>
+    </div>
+</body>
+</html>
