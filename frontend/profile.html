@@ -1,57 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Profile Page</title>
     <style>
         body {
-            background: #f4f4f4;
+            background-color: #f4f4f4;
             font-family: Arial, sans-serif;
             color: #000;
         }
-        
+
         .container {
             width: 400px;
             background-color: #fff;
             text-align: center;
             border-radius: 3px;
-            padding: 20px;
-            margin: 50px auto;
             box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            margin: 50px auto;
+            padding: 20px;
         }
 
-        input[type="text"], input[type="email"], input[type="date"] {
+        input[type="text"], input[type="email"], input[type="date"], select {
             border: 1px solid #ccc;
             border-radius: 3px;
             padding: 10px;
             width: 95%;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
-        
-        input[type="button"], input[type="submit"] {
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        button {
             background-color: #4caf50;
             color: #fff;
             border-radius: 3px;
             border: none;
             padding: 10px;
             width: 100%;
-            margin-bottom: 10px;
             cursor: pointer;
+            margin-top: 10px;
         }
-        
-        .danger-button {
+
+        button.delete {
             background-color: #f44336;
         }
 
-        label {
-            text-align: left;
-            display: block;
-            margin-top: 10px;
+        button.logout {
+            background-color: #007bff;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>User Profile</h2>
+        <img src="" id="profileImage" class="profile-image" alt="Profile Image">
         <form id="profileForm">
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="firstName" disabled><br>
@@ -59,112 +71,84 @@
             <label for="lastName">Last Name:</label>
             <input type="text" id="lastName" name="lastName" disabled><br>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" disabled><br>
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" disabled>
+                <option value="man">Man</option>
+                <option value="woman">Woman</option>
+            </select><br>
 
             <label for="dob">Date of Birth:</label>
             <input type="date" id="dob" name="dob" disabled><br>
 
-            <input type="button" id="editButton" value="Edit">
-            <input type="button" id="deleteButton" class="danger-button" value="Delete Account">
-            <input type="button" id="logoutButton" value="Logout">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" disabled><br>
+
+            <label for="profileImageUpload">Profile Image:</label>
+            <input type="file" id="profileImageUpload" name="profileImageUpload" accept="image/*" disabled><br>
+
+            <button type="button" id="editButton">Edit</button>
+            <button type="button" id="deleteButton" class="delete">Delete Account</button>
+            <button type="button" id="logoutButton" class="logout">Logout</button>
         </form>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    <script type="module">
+        document.getElementById('editButton').addEventListener('click', async () => {
             const form = document.getElementById('profileForm');
             const editButton = document.getElementById('editButton');
-            const deleteButton = document.getElementById('deleteButton');
-            const logoutButton = document.getElementById('logoutButton');
 
-            // Fetch user data from backend
-            fetch('/api/profile', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                form.firstName.value = data.first_name;
-                form.lastName.value = data.last_name;
-                form.email.value = data.email;
-                form.dob.value = data.dob;
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-                alert('Failed to fetch user data. Please try again.');
-            });
-
-            // Edit Mode Toggle
-            editButton.addEventListener('click', function() {
-                if (editButton.value === "Edit") {
-                    toggleEditMode(true);
-                    editButton.value = "Update";
-                } else {
-                    // Update user data
-                    const updatedData = {
-                        first_name: form.firstName.value,
-                        last_name: form.lastName.value,
-                        email: form.email.value,
-                        dob: form.dob.value
-                    };
-
-                    fetch('/api/profile', {
+            if (editButton.textContent === 'Edit') {
+                [...form.elements].forEach(element => element.disabled = false);
+                editButton.textContent = 'Update';
+            } else {
+                const formData = new FormData(form);
+                try {
+                    const response = await fetch('/api/profile', {
                         method: 'PUT',
+                        body: formData,
                         headers: {
-                            'Content-Type': 'application/json',
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        },
-                        body: JSON.stringify(updatedData)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Profile updated successfully.');
-                        toggleEditMode(false);
-                        editButton.value = "Edit";
-                    })
-                    .catch(error => {
-                        console.error('Error updating profile:', error);
-                        alert('Failed to update profile. Please try again.');
+                        }
                     });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Profile updated successfully!');
+                    } else {
+                        alert('Failed to update profile: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
                 }
-            });
+                [...form.elements].forEach(element => element.disabled = true);
+                editButton.textContent = 'Edit';
+            }
+        });
 
-            // Delete Account
-            deleteButton.addEventListener('click', function() {
-                if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                    fetch('/api/profile', {
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            if (confirm("Are you sure you want to delete your account?")) {
+                try {
+                    const response = await fetch('/api/profile', {
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Account deleted successfully.');
-                        localStorage.removeItem('token');
-                        window.location.href = '/register.html';
-                    })
-                    .catch(error => {
-                        console.error('Error deleting account:', error);
-                        alert('Failed to delete account. Please try again.');
                     });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Account deleted successfully!');
+                        window.location.href = '/register.html';
+                    } else {
+                        alert('Failed to delete account: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
                 }
-            });
-
-            // Logout
-            logoutButton.addEventListener('click', function() {
-                localStorage.removeItem('token');
-                alert('Logged out successfully.');
-                window.location.href = '/login.html';
-            });
-
-            // Function to toggle edit mode
-            function toggleEditMode(enable) {
-                const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="date"]');
-                inputs.forEach(input => input.disabled = !enable);
             }
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
         });
     </script>
 </body>
