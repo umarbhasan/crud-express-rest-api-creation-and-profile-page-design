@@ -15,8 +15,20 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
-const upload = multer({ dest: 'uploads/' });
+
+// File upload configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // MySQL connection
 const dbConfig = {
@@ -68,6 +80,17 @@ app.post('/api/register', upload.single('profile_image'), async (req, res) => {
         res.status(500).json({ message: 'Error registering user', error });
     }
 });
+
+/*verifyToken, upload.single('profile_image'), async (req, res) => {
+    try {
+        const profile_image_url = req.file ? req.file.path : null;
+        await db.query('UPDATE users SET profile_image_url = ? WHERE email = ?', [profile_image_url, req.email]);
+        res.json({ message: 'Profile image uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading profile image:', error);
+        res.status(500).json({ message: 'Error uploading profile image', error });
+    }
+});*/
 
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
@@ -140,6 +163,27 @@ app.post('/api/profile/image', verifyToken, upload.single('profile_image'), asyn
         res.status(500).json({ message: 'Error uploading profile image', error });
     }
 });
+
+// Update password
+app.put('/api/profile/password', verifyToken, async (req, res) => {
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+        return res.status(400).json({ message: 'New password is required' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await db.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, req.email]);
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Error updating password', error });
+    }
+});
+
 
 // Serve static files
 app.get('/', (req, res) => {
