@@ -19,41 +19,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logout-btn");
     const imageForm = document.getElementById("image-form");
     const profileImageInput = document.getElementById("profile-image");
+    const profileImageDisplay = document.getElementById("profile-image-display");
+    const passwordForm = document.getElementById("password-form");
 
-    // Fetch profile data
-    async function fetchProfile() {
-        try {
-            const response = await fetch("/api/profile", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-            if (response.ok) {
-                const user = await response.json();
-                document.getElementById("first-name").value = user.first_name;
-                document.getElementById("last-name").value = user.last_name;
-                document.getElementById("gender").value = user.gender;
-                document.getElementById("dob").value = user.date_of_birth;
-                document.getElementById("email").value = user.email;
-            } else {
-                alert("Failed to fetch profile");
+// Fetch profile data
+async function fetchProfile() {
+    try {
+        const response = await fetch("/api/profile", {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById("first-name").value = user.first_name;
+            document.getElementById("last-name").value = user.last_name;
+            document.getElementById("gender").value = user.gender;
+            document.getElementById("dob").value = user.date_of_birth;
+            document.getElementById("email").value = user.email;
+            document.getElementById("password").value = user.password;
+
+            // Display profile image if it exists
+            if (user.profile_image_url) {
+                const profileImageDisplay = document.getElementById("profile-image-display");
+                profileImageDisplay.src = `/${user.profile_image_url}`;
+                profileImageDisplay.style.display = "block";
             }
-        } catch (error) {
-            console.error("Error fetching profile:", error);
-            alert("An error occurred while fetching the profile. Please try again.");
+        } else {
+            alert("Failed to fetch profile");
         }
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        alert("An error occurred while fetching the profile. Please try again.");
     }
+}
+
+
 
     if (profileForm) {
         fetchProfile();
 
         editBtn.addEventListener("click", () => {
-            profileForm.querySelectorAll("input").forEach(input => input.disabled = false);
+            profileForm.querySelectorAll("input, select").forEach(input => input.disabled = false);
             editBtn.style.display = "none";
             deleteBtn.style.display = "none";
             updateBtn.style.display = "inline-block";
             imageForm.style.display = "block";
+            passwordForm.style.display = "block";
+            profileImageDisplay.style.display = "none";
         });
 
         profileForm.addEventListener("submit", async (event) => {
@@ -139,6 +152,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("An error occurred while uploading the profile image. Please try again.");
             }
         });
+
+        passwordForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const newPassword = document.getElementById("new-password").value;
+
+            try {
+                const response = await fetch("/api/profile/password", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ newPassword }),
+                });
+                if (response.ok) {
+                    alert("Password updated successfully!");
+                    window.location.reload();  // Reload the entire page after password update
+                } else {
+                    const result = await response.json();
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error("Error updating password:", error);
+                alert("An error occurred while updating the password. Please try again.");
+            }
+        });
     }
 
     if (registrationForm) {
@@ -189,16 +229,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Load remembered email
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+        document.querySelector("#login-email").value = rememberedEmail;
+        document.querySelector("#remember-me").checked = true;
+    }
+
     if (loginForm) {
         loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const email = document.querySelector("#login-email").value;
             const password = document.querySelector("#login-password").value;
-
             const rememberMe = document.querySelector("#remember-me").checked;
-
-            const payload = { email, password };
 
             try {
                 const response = await fetch("/api/login", {
@@ -206,12 +250,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify({ email, password }),
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    alert("Login successful!");
                     localStorage.setItem("token", result.token);
+                    if (rememberMe) {
+                        localStorage.setItem("rememberedEmail", email);
+                    } else {
+                        localStorage.removeItem("rememberedEmail");
+                    }
+                    alert("Login successful!");
                     window.location.href = "/profile.html";
                 } else {
                     alert(result.message);
