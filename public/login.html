@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        body {
+            background: #f4f4f4;
+            font-family: Arial, sans-serif;
+            color: #000;
+        }
+        
+        .container {
+            width: 400px;
+            background-color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            padding: 20px;
+            margin: 50px auto;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 10px;
+            width: 95%; /* Increase the input field length */
+        }
+
+        input[type="checkbox"] {
+            vertical-align: middle;
+            position: relative;
+            display: inline-block;
+        }
+        
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 3px;
+            border: none;
+            padding: 10px;
+            width: 100%; /* Increase the button field length */
+        }
+        
+        a {
+            color: #007bff;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        
+        label {
+            text-align: left;
+            display: block;
+        }
+
+        button:hover {
+      background-color: #005f10;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container" id="login-form">
+            <h2>Login Form</h2>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required><br><br>
+
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required><br><br>
+                
+                <label>
+                    <input type="checkbox" id="remember-me"> Remember Me
+                </label>
+                <button type="submit">Login</button><br><br>
+
+                <a href="https://www.linkedin.com/in/umar-hasan-2275aa21b">Forgot Password?</a><br><br>
+            <text>Don't have an account? </text>
+            
+            <a href="register.html">Register</a>
+            </form>
+        </div>
+    </div>
+    <script src="app.js" type="module"></script>
+</body>
+</html>

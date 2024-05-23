@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #000;
+          }
+          
+          .container {
+            width: 400px;
+            background-color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            margin: 50px auto;
+            padding: 20px;
+          }
+          
+          input[type="text"], input[type="email"], input[type="password"] {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 10px;
+            width: 95%; /* Increase the input field length */
+          }
+          select[id="gender"] {
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 10px;
+      width: 100%;
+    }
+    
+    input[type="date"] {
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 10px;
+      width: 95%;
+    }
+    
+    input[type="file"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        width: 95%;
+    }
+    
+    label {
+      text-align: left;
+      display: block;
+    }
+    
+    button {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      border-radius: 3px;
+      border: none;
+      padding: 10px;
+      width: 100%; /* Increase the button field length */
+    }
+    
+    button:hover {
+      background-color: #005f10;
+    }
+    
+    a {
+      color: #007bff;
+      cursor: pointer;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container" id="registration-form">
+            <h2>Registration Form</h2>
+            <form id="register-form">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" placeholder="e.g. Wardun" required><br><br>
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" placeholder="e.g. Islam" required><br><br>
+                <label for="gender">Gender:</label>
+                <select id="gender" required>
+                    <option value="" disabled selected>Male/Female?</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select><br><br>
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" required><br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="e.g. wardun.islam@northsouth.edu" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Don't forget!" required><br><br>
+                <label for="retype-password">Retype Password:</label>
+                <input type="password" id="retype-password" placeholder="Just to confirm!" required><br><br>
+                <label for="profile-image">Profile Image: (Optional)</label>
+                <input type="file" id="profile-image" accept="image/*"><br><br>
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </div>
+    <script src="app.js" type="module"></script>
+</body>
+</html>
