@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <style>
         body {
@@ -20,11 +21,12 @@
             box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
         }
         
-        input[type="email"], input[type="password"] {
+        input[type="email"],
+        input[type="password"] {
             border: 1px solid #ccc;
             border-radius: 3px;
             padding: 10px;
-            width: 95%;
+            width: 95%; /* Increase the input field length */
         }
 
         input[type="checkbox"] {
@@ -33,13 +35,14 @@
             display: inline-block;
         }
         
-        input[type="submit"] {
+        button[type="submit"] {
             background-color: #4caf50;
             color: #fff;
+            cursor: pointer;
             border-radius: 3px;
             border: none;
             padding: 10px;
-            width: 100%;
+            width: 100%; /* Increase the button field length */
         }
         
         a {
@@ -52,55 +55,35 @@
             text-align: left;
             display: block;
         }
+
+        button:hover {
+      background-color: #005f10;
+    }
     </style>
-</head>    
+</head>
 <body>
-    <div class="container">
-        <h2>Login Form</h2>
-        <form id="loginForm">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
+    <div id="app">
+        <div class="container" id="login-form">
+            <h2>Login Form</h2>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required><br><br>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required><br><br>
+                
+                <label>
+                    <input type="checkbox" id="remember-me"> Remember Me
+                </label>
+                <button type="submit">Login</button><br><br>
 
-            <label><input type="checkbox" id="remember"> Remember Me</label>
-            <input type="submit" value="Login"><br><br>
-
-            <a href="#">Forgot Password?</a><br><br>
-            <span>Don't have an account? </span>
+                <a href="https://www.linkedin.com/in/umar-hasan-2275aa21b">Forgot Password?</a><br><br>
+            <text>Don't have an account? </text>
+            
             <a href="register.html">Register</a>
-        </form>
+            </form>
+        </div>
     </div>
-    <script type="module">
-        document.getElementById('loginForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
-
-            // Perform login logic here
-            // Example: Sending login data to the server using Fetch API
-            fetch('http://localhost:5000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password, remember })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Handle successful login
-                    alert('Login successful!');
-                    window.location.href = 'profile.html'; // Redirect to profile page
-                } else {
-                    // Handle login failure
-                    alert('Login failed: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>
