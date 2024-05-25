@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags for character set and responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
+
+    <!-- Internal CSS for styling the login form -->
     <style>
         body {
             background: #f4f4f4;
@@ -57,33 +60,42 @@
         }
 
         button:hover {
-      background-color: #005f10;
-    }
+            background-color: #005f10;
+        }
     </style>
 </head>
 <body>
+    <!-- Main application div -->
     <div id="app">
+        <!-- Login form container -->
         <div class="container" id="login-form">
             <h2>Login Form</h2>
+            <!-- Login form -->
             <form id="login-form">
+                <!-- Input fields for email and password -->
                 <label for="login-email">Email:</label>
                 <input type="email" id="login-email" required><br><br>
 
                 <label for="login-password">Password:</label>
                 <input type="password" id="login-password" required><br><br>
                 
+                <!-- Checkbox for 'Remember Me' option -->
                 <label>
                     <input type="checkbox" id="remember-me"> Remember Me
                 </label>
                 <button type="submit">Login</button><br><br>
 
+                <!-- Link for users who forgot their password -->
                 <a href="https://www.linkedin.com/in/umar-hasan-2275aa21b">Forgot Password?</a><br><br>
-            <text>Don't have an account? </text>
-            
-            <a href="register.html">Register</a>
+
+                <!-- Link for users who don't have an account -->
+                <text>Don't have an account? </text>
+                <a href="register.html">Register</a>
             </form>
         </div>
     </div>
+    
+    <!-- External JavaScript file for handling form submission and other interactions -->
     <script src="app.js" type="module"></script>
 </body>
 </html>
