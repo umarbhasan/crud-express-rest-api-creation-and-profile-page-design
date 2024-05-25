@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags for character set and responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+
+    <!-- Internal CSS for styling the profile page -->
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -28,6 +31,7 @@
         padding: 10px;
         width: 95%; /* Increase the input field length */
       }
+      
       select[id="gender"] {
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -111,19 +115,23 @@
       }
 
       img {
-          display: block;
-          margin: 0 auto;
-          width: 100px;
-          height: 100px;
-        }
+        display: block;
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+      }
 
     </style>
 </head>
 <body>
+    <!-- Main container for profile page content -->
     <main class="container">
         <h1>Profile Page</h1>
+        <!-- Form for displaying and updating user profile information -->
         <form id="profile-form">
+            <!-- Profile image display -->
             <img id="profile-image-display" src="" alt="Profile Image Unuploaded"><br>
+            <!-- Input fields for user information (initially disabled) -->
             <label for="first-name">First Name:</label>
             <input type="text" id="first-name" name="first_name" disabled>
             <br><br>
@@ -143,29 +151,43 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" disabled>
             <br>
-            <br><hr><button type="button" id="edit-btn">Edit</button>
+            <br>
+            <!-- Buttons for editing and updating profile -->
+            <hr><button type="button" id="edit-btn">Edit</button>
             <button type="submit" id="update-btn" style="display:none;">Update</button>
-            <br><br><button type="button" id="delete-btn">Delete Account</button>
+            <br><br>
+            <!-- Button for deleting the account -->
+            <button type="button" id="delete-btn">Delete Account</button>
         </form><br>
+        
+        <!-- Form for uploading a new profile image (initially hidden) -->
         <form id="image-form" style="display:none;">
           <br>
             <label for="profile-image">New Profile Image:</label>
             <input type="file" id="profile-image" name="profile_image">
-            <br><br><hr><button type="submit" id="upload-img-btn">Upload New Image</button><br><br>
+            <br><br>
+            <hr><button type="submit" id="upload-img-btn">Upload New Image</button><br><br>
         </form><br>
+        
+        <!-- Form for updating the password (initially hidden) -->
         <form id="password-form" style="display:none;">
           <br>
           <br>
             <label for="password">Current Password:</label>
             <input type="password" id="password" name="password" disabled>
             <br><br>
-          <label for="new-password">New Password:</label>
-          <input type="password" id="new-password" name="new_password">
-          <br><br><hr><button type="submit" id="update-pw-btn">Update Password</button><br><br><br><br>
+            <label for="new-password">New Password:</label>
+            <input type="password" id="new-password" name="new_password">
+            <br><br>
+            <hr><button type="submit" id="update-pw-btn">Update Password</button><br><br><br><br>
       </form><br>
+      
+        <!-- Button for logging out -->
         <hr>
         <button id="logout-btn">Logout</button><br>
     </main>
+
+    <!-- External JavaScript file for handling form submission and other interactions -->
     <script src="app.js"></script>
 </body>
 </html>
