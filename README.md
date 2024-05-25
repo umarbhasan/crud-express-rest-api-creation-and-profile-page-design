@@ -68,12 +68,14 @@ npm start
 
 ## Technologies Used
 
+- **Node.js**: JavaScript runtime environment for building server-side applications.
 - **Express.js**: Web framework for building the REST API.
 - **MySQL**: Database management system for storing user data.
 - **bcrypt**: Library for hashing passwords securely.
 - **jsonwebtoken**: Library for handling JSON Web Tokens (JWT) for authentication.
 - **Multer**: Middleware for handling file uploads.
 - **HTML/CSS**: Frontend technologies for designing the profile page.
+- **JavaScript**: Programming language used for server-side and client-side scripting.
 
 ## License
 
