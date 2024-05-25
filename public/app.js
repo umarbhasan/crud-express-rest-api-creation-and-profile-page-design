@@ -1,5 +1,8 @@
+// Event listener for when the DOM content is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
+
+    // Redirect logic based on authentication status
     if (token && window.location.pathname === '/login.html') {
         window.location.href = "/profile.html";
         return;
@@ -9,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // Form and button element references
     const registrationForm = document.querySelector("#register-form");
     const loginForm = document.querySelector("#login-form");
-
     const profileForm = document.getElementById("profile-form");
     const editBtn = document.getElementById("edit-btn");
     const updateBtn = document.getElementById("update-btn");
@@ -22,43 +25,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileImageDisplay = document.getElementById("profile-image-display");
     const passwordForm = document.getElementById("password-form");
 
-// Fetch profile data
-async function fetchProfile() {
-    try {
-        const response = await fetch("/api/profile", {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            },
-        });
-        if (response.ok) {
-            const user = await response.json();
-            document.getElementById("first-name").value = user.first_name;
-            document.getElementById("last-name").value = user.last_name;
-            document.getElementById("gender").value = user.gender;
-            document.getElementById("dob").value = user.date_of_birth;
-            document.getElementById("email").value = user.email;
-            document.getElementById("password").value = user.password;
+    // Fetch profile data from the server
+    async function fetchProfile() {
+        try {
+            const response = await fetch("/api/profile", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const user = await response.json();
+                document.getElementById("first-name").value = user.first_name;
+                document.getElementById("last-name").value = user.last_name;
+                document.getElementById("gender").value = user.gender;
+                document.getElementById("dob").value = user.date_of_birth;
+                document.getElementById("email").value = user.email;
+                document.getElementById("password").value = user.password;
 
-            // Display profile image if it exists
-            if (user.profile_image_url) {
-                const profileImageDisplay = document.getElementById("profile-image-display");
-                profileImageDisplay.src = `/${user.profile_image_url}`;
-                profileImageDisplay.style.display = "block";
+                // Display profile image if it exists
+                if (user.profile_image_url) {
+                    const profileImageDisplay = document.getElementById("profile-image-display");
+                    profileImageDisplay.src = `/${user.profile_image_url}`;
+                    profileImageDisplay.style.display = "block";
+                }
+            } else {
+                alert("Failed to fetch profile");
             }
-        } else {
-            alert("Failed to fetch profile");
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+            alert("An error occurred while fetching the profile. Please try again.");
         }
-    } catch (error) {
-        console.error("Error fetching profile:", error);
-        alert("An error occurred while fetching the profile. Please try again.");
     }
-}
-
-
 
     if (profileForm) {
+        // Fetch and display profile data if profile form exists
         fetchProfile();
 
+        // Enable editing of profile fields
         editBtn.addEventListener("click", () => {
             profileForm.querySelectorAll("input, select").forEach(input => input.disabled = false);
             editBtn.style.display = "none";
@@ -69,6 +72,7 @@ async function fetchProfile() {
             profileImageDisplay.style.display = "none";
         });
 
+        // Update profile information on form submission
         profileForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -97,6 +101,7 @@ async function fetchProfile() {
             }
         });
 
+        // Delete account functionality
         deleteBtn.addEventListener("click", async () => {
             if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
                 try {
@@ -121,11 +126,13 @@ async function fetchProfile() {
             }
         });
 
+        // Logout functionality
         logoutBtn.addEventListener("click", () => {
             localStorage.removeItem("token");
             window.location.href = "/login.html";
         });
 
+        // Upload new profile image functionality
         imageForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -153,6 +160,7 @@ async function fetchProfile() {
             }
         });
 
+        // Update password functionality
         passwordForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -181,6 +189,7 @@ async function fetchProfile() {
         });
     }
 
+    // Handle user registration
     if (registrationForm) {
         registrationForm.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -229,13 +238,14 @@ async function fetchProfile() {
         });
     }
 
-    // Load remembered email
+    // Load remembered email for login form
     const rememberedEmail = localStorage.getItem("rememberedEmail");
     if (rememberedEmail) {
         document.querySelector("#login-email").value = rememberedEmail;
         document.querySelector("#remember-me").checked = true;
     }
 
+    // Handle user login
     if (loginForm) {
         loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
