@@ -10,35 +10,35 @@ const app = express();
 const port = 3000;
 const jwtSecret = 'your_jwt_secret_key'; // Change this to a strong secret
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+// Middleware configuration
+app.use(cors()); // Enable CORS for all routes
+app.use(bodyParser.json()); // Parse JSON request bodies
+app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request bodies
+app.use(express.static('public')); // Serve static files from the 'public' directory
+app.use('/uploads', express.static('uploads')); // Serve uploaded files from the 'uploads' directory
 
-
-// File upload configuration
+// File upload configuration using multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/'); // Set upload directory
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
+        cb(null, Date.now() + '-' + file.originalname); // Generate unique filenames
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); // Initialize multer with storage configuration
 
-// MySQL connection
+// MySQL database configuration
 const dbConfig = {
     host: 'localhost',
     user: 'root',
     database: 'assignment2'
 };
 
-let db;
+let db; // Database connection variable
 
+// Initialize database connection
 (async function initializeDbConnection() {
     try {
         db = await mysql.createConnection(dbConfig);
@@ -48,7 +48,7 @@ let db;
     }
 })();
 
-// Helper function to verify JWT
+// Helper function to verify JWT tokens
 function verifyToken(req, res, next) {
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     if (!token) {
@@ -64,12 +64,12 @@ function verifyToken(req, res, next) {
     });
 }
 
-// API Endpoints
+// API endpoint for user registration
 app.post('/api/register', upload.single('profile_image'), async (req, res) => {
     const { first_name, last_name, gender, date_of_birth, email, password } = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const profile_image_url = req.file ? req.file.path : null;
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the user's password
+        const profile_image_url = req.file ? req.file.path : null; // Get profile image URL if uploaded
         await db.query(
             'INSERT INTO users (first_name, last_name, gender, date_of_birth, email, password, profile_image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [first_name, last_name, gender, date_of_birth, email, hashedPassword, profile_image_url]
@@ -81,17 +81,7 @@ app.post('/api/register', upload.single('profile_image'), async (req, res) => {
     }
 });
 
-/*verifyToken, upload.single('profile_image'), async (req, res) => {
-    try {
-        const profile_image_url = req.file ? req.file.path : null;
-        await db.query('UPDATE users SET profile_image_url = ? WHERE email = ?', [profile_image_url, req.email]);
-        res.json({ message: 'Profile image uploaded successfully' });
-    } catch (error) {
-        console.error('Error uploading profile image:', error);
-        res.status(500).json({ message: 'Error uploading profile image', error });
-    }
-});*/
-
+// API endpoint for user login
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -101,12 +91,12 @@ app.post('/api/login', async (req, res) => {
         }
 
         const user = rows[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password); // Compare password with hashed password
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: '1h' }); // Generate JWT token
         res.json({ message: 'Login successful', token });
     } catch (error) {
         console.error('Error logging in user:', error);
@@ -114,6 +104,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// API endpoint to fetch user profile
 app.get('/api/profile', verifyToken, async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [req.email]);
@@ -129,6 +120,7 @@ app.get('/api/profile', verifyToken, async (req, res) => {
     }
 });
 
+// API endpoint to update user profile
 app.put('/api/profile', verifyToken, async (req, res) => {
     const { first_name, last_name, gender, date_of_birth, email } = req.body;
     try {
@@ -143,6 +135,7 @@ app.put('/api/profile', verifyToken, async (req, res) => {
     }
 });
 
+// API endpoint to delete user account
 app.delete('/api/profile', verifyToken, async (req, res) => {
     try {
         await db.query('DELETE FROM users WHERE email = ?', [req.email]);
@@ -153,9 +146,10 @@ app.delete('/api/profile', verifyToken, async (req, res) => {
     }
 });
 
+// API endpoint to upload a profile image
 app.post('/api/profile/image', verifyToken, upload.single('profile_image'), async (req, res) => {
     try {
-        const profile_image_url = req.file ? req.file.path : null;
+        const profile_image_url = req.file ? req.file.path : null; // Get profile image URL if uploaded
         await db.query('UPDATE users SET profile_image_url = ? WHERE email = ?', [profile_image_url, req.email]);
         res.json({ message: 'Profile image uploaded successfully' });
     } catch (error) {
@@ -164,7 +158,7 @@ app.post('/api/profile/image', verifyToken, upload.single('profile_image'), asyn
     }
 });
 
-// Update password
+// API endpoint to update user password
 app.put('/api/profile/password', verifyToken, async (req, res) => {
     const { newPassword } = req.body;
 
@@ -173,7 +167,7 @@ app.put('/api/profile/password', verifyToken, async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // Hash the new password
 
         await db.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, req.email]);
 
@@ -184,12 +178,12 @@ app.put('/api/profile/password', verifyToken, async (req, res) => {
     }
 });
 
-
-// Serve static files
+// Serve the registration page as the default route
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/register.html');
 });
 
+// Start the Express server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
 });
